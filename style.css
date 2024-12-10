@@ -1,0 +1,18 @@
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+progress {
+    margin-top: 1rem;
+    height: 40px;
+    width: 100%;
+}
+
+/* span {
+    color: red;
+} */

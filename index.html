@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two Step Registration Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="d-flex justify-content-center align-items-center">
+    <form id="regForm" class="mt-5">
+        <div class="step active">
+            <div class="progress mt-4">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 50%" aria-valuenow="50"
+                    aria-valuemin="0" aria-valuemax="100">Incomplete</div>
+            </div>
+            <h2 style="font-style: italic;"><u>Personal Information</u></h2>
+            <label class="mt-2" for="Name"><b>Full Name :</b></label>
+            <input type="text" class="form-control" name="text" id="text" placeholder="Enter Full Name..">
+            <div id="err-name" class="msg alert alert-danger d-none" role="alert"></div>
+            <label class="mt-2" for="email"><b>Email :</b></label>
+            <input type="email" class="form-control" name="email" id="email" placeholder="Enter Email Address..">
+            <div id="err-email" class="msg alert alert-danger d-none" role="alert"></div>
+        </div>
+        <div class="step">
+            <div class="progress mt-4">
+                <div class="progress-bar bg-primary" role="progressbar" style="width: 100%" aria-valuenow="100"
+                    aria-valuemin="0" aria-valuemax="100">Complete</div>
+            </div>
+            <h2 style="font-style: italic;"><u>Account Details</u></h2>
+            <label class="mt-2" for="username"><b>Username :</b></label>
+            <input type="text" class="form-control" name="username" id="username" autocomplete="username"
+                placeholder="Enter Username">
+            <div id="err-username" class="msg alert alert-danger d-none" role="alert"></div>
+            <label class="mt-2" for="password"><b>Password :</b></label>
+            <input type="password" class="form-control" name="password" id="password" autocomplete="current-password"
+                placeholder="Enter Password">
+            <div id="err-password" class="msg alert alert-danger d-none" role="alert"></div>
+        </div>
+        <div class="btn-container">
+            <button type="button" class="prev btn btn-info mt-2 float-start" style="display: none">Previous</button>
+            <button type="button" name="next" class="next btn btn-primary mt-2 float-end">Next</button>
+            <button type="submit" class="btn btn-primary mt-2 float-end" name="submit"
+                style="display: none">Submit</button>
+        </div>
+    </form>
+    </div>
+    <!-- <script src="form.js"></script> -->
+</body>
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+    crossorigin="anonymous"></script>
+<script>
+    $(function () {
+
+        currentStep = 0;
+
+        $(".next").on("click", function () {
+            if (validateStepOne()) {
+                $(".step").eq(currentStep).removeClass("active");
+                currentStep++;
+                $(".step").eq(currentStep).addClass("active");
+                updateButtons();
+            }
+        });
+
+        $(".prev").on("click", function () {
+            $(".step").eq(currentStep).removeClass("active");
+            currentStep--;
+            $(".step").eq(currentStep).addClass("active");
+            updateButtons();
+        });
+
+        function validateStepOne() {
+            let txtValid = $("#text").val();
+            if (!txtValid) {
+                $('#err-name').html('*Name required');
+                $('#err-name').removeClass('d-none');
+                // $('#err-name').css('color', 'red');
+                return false;
+            }
+            $('#err-name').addClass('d-none');
+            $('#err-name').html('');
+
+
+            let emailvalid = $("#email").val();
+            let emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+            if (!emailvalid) {
+                $('#err-email').html("*Email must be required");
+                $('#err-email').removeClass('d-none');
+                return false;
+            }
+            if (!emailPattern.test(emailvalid)) {
+                $('#err-email').html("*Not a valid email");
+                return false;
+            }
+            $('#err-email').addClass('d-none');
+            $('#err-email').html('');
+
+            return true;
+        }
+
+
+        function updateButtons() {
+            if (currentStep === 0) {
+                $(".prev").css("display", "none");
+            } else {
+                $(".prev").css("display", "inline-block");
+            }
+
+            if (currentStep === $(".step").length - 1) {
+                $(".next").css("display", "none");
+                $("#regForm button[type='submit']").css("display", "inline-block");
+            } else {
+                $(".next").css("display", "inline-block");
+                $("#regForm button[type='submit']").css("display", "none");
+            }
+        }
+
+        $("#regForm").on('submit', function (e) {
+            e.preventDefault();
+            let min = 4;
+            let userValid = $("#username").val();
+            let charlength = userValid.length;
+            if (!userValid) {
+                $('#err-username').html("*Username must be required");
+                $('#err-username').removeClass('d-none');
+                return false;
+            } else if (charlength < min) {
+                $('#err-username').html("*Username minimun 3 characters");
+                return false;
+            }
+            $('#err-username').addClass('d-none');
+            $('#err-username').html('');
+
+            let passMin = 7;
+            let passValid = $("#password").val();
+            let passlength = passValid.length;
+            if (!passValid) {
+                $("#err-password").html("*Password must be required");
+                $('#err-password').removeClass('d-none');
+                return false;
+            } else if (passlength < passMin) {
+                $("#err-password").html("*Password minimum 6 characters")
+                return false;
+            }
+            $('#err-password').addClass('d-none');
+            $("#err-password").html('');
+
+            return true;
+        })
+    })
+</script>
+
+</html>
